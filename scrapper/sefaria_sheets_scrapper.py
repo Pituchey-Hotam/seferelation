@@ -9,12 +9,6 @@ from tqdm import tqdm
 INTERVAL_SIZE = 500
 
 
-def _extract_ref_from_response(response):
-    sources = response["sources"]
-    refs = [s["ref"] for s in sources if "ref" in s]
-    return refs
-
-
 def download_range(start, end):
     target_path = f"downloads/sheets_dump_{start:07}_{end:07}.pickle"
     if Path(target_path).exists():
