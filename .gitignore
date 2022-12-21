@@ -1,6 +1,8 @@
 # Ignore vim
 *.sw[po]
 
-# Ignore pickle
+# Ignore resources
 *.pickle
+*.7z
+*.png
 
