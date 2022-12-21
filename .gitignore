@@ -1,0 +1,6 @@
+# Ignore vim
+*.sw[po]
+
+# Ignore pickle
+*.pickle
+
