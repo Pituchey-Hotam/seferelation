@@ -1,6 +1,9 @@
 # Ignore vim
 *.sw[po]
 
+# Ignore python
+*.pyc
+
 # Ignore resources
 *.pickle
 *.7z
