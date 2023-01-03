@@ -66,7 +66,7 @@ class SheetParser:
         self.graph = Graph()
 
     def _link_range_ref(self, ref: str):
-        self.graph.add_node_type(ref, "range")
+        self.graph.add_node_type(ref, node_type="range")
         for r in _extract_refs_range(ref):
             self.graph.add_edge(ref, r)
 
