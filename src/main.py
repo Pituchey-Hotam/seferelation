@@ -9,6 +9,8 @@ from tqdm import tqdm
 from sheet_parser import SheetParser, is_valid_sheet
 
 
+SHEETS_PICKLE_PATH = Path("scrapper/downloads")
+# SHEETS_PICKLE_PATH = Path("scrapper/sheets_sample_5percent.pickle")
 GRAPH_PATH = Path("sefaria_400k_graph.pickle")
 
 
@@ -87,8 +89,6 @@ class CLIQueryManager:
 
 def main():
     print("hi")
-    SHEETS_PICKLE_PATH = Path("scrapper/downloads")
-    # SHEETS_PICKLE_PATH = Path("scrapper/sheets_sample_5percent.pickle")
     if GRAPH_PATH.exists():
         with GRAPH_PATH.open("rb") as f:
             graph = pickle.load(f)

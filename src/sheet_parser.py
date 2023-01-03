@@ -5,8 +5,10 @@ import networkx as nx
 
 from typing import List, Dict
 
+import math
 import itertools
 
+import logger
 from graph_manager import Graph
 
 
@@ -26,6 +28,10 @@ def _extract_ref_from_sheet(sheet: Dict):
 
 def _is_flat_ref(ref: str) -> bool:
     return "-" not in ref
+
+
+def _is_ref_range(ref: str) -> bool:
+    return "-" in ref
 
 
 def _flat_ref(ref: str):
@@ -50,49 +56,40 @@ def _extract_refs_range(ref: str) -> List[str]:
     return [flat + str(i) for i in range(*ref_range)]
 
 
-def _flat_refs(refs: List[str]):
-    return [_flat_ref(ref) for ref in refs]
-
-
-def _sheet_score(sheet: Dict):
+def _sheet_popularity(sheet: Dict):
     views = sheet.get("views")
-    if views < 10:
-        return 0
-    elif views < 100:
-        return 1
-    elif views < 1000:
-        return 2
-    else:
-        return 3
+    return int(math.log(views, 10))
 
 
 class SheetParser:
     def __init__(self):
         self.graph = Graph()
 
-    def _link_refs(self, n1, n2, weight):
-        self.graph.add_edge(n1, n2, weight)
-        if not _is_flat_ref(n1):
-            for r in _extract_refs_range(n1):
-                self.graph.add_edge(n1, r, weight * 0.1)
-        if not _is_flat_ref(n2):
-            for r in _extract_refs_range(n2):
-                self.graph.add_edge(n2, r, weight * 0.1)
+    def _link_range_ref(self, ref: str):
+        self.graph.add_node_type(ref, "range")
+        for r in _extract_refs_range(ref):
+            self.graph.add_edge(ref, r)
 
-    def _add_full_graph_edges(self, nodes, weight=None):
+    def _link_refs(self, n1, n2, **attrs):
+        self.graph.add_edge(n1, n2, **attrs)
+        if _is_ref_range(n1):
+            self._link_range_ref(n1)
+        if _is_ref_range(n2):
+            self._link_range_ref(n2)
+
+    def _add_full_graph_edges(self, nodes, popularity):
         nodes = set(nodes)
-        if len(nodes) > 12:
-            print(f"too much nodes, pass it. nodes: {len(nodes)}")
+        if len(nodes) > 14:
+            logger.log(f"too much nodes, pass it. nodes: {len(nodes)}, popularity: {popularity}")
             return
         for n1, n2 in itertools.combinations(nodes, 2):
-            self._link_refs(n1, n2, weight)
+            self._link_refs(n1, n2, sefaria_popularity=popularity)
 
     def add_sefaria_sheet_connections(self, sheet: Dict):
         refs = _extract_ref_from_sheet(sheet)
-        # refs = _flat_refs(refs)
-        score = _sheet_score(sheet)
-        if score > 0:
-            self._add_full_graph_edges(refs, weight=1 / score)
+        popularity = _sheet_popularity(sheet)
+        if popularity > 0:
+            self._add_full_graph_edges(refs, popularity=popularity)
         return self.graph.size()
 
     def update_with_sheet_list(self, sheets: List[Dict]):
@@ -100,8 +97,8 @@ class SheetParser:
             if not is_valid_sheet(sheet):
                 continue
             size = self.add_sefaria_sheet_connections(sheet)
-        print(f"graph size: {size}")
-        print(f"connected_components: {nx.number_connected_components(self.graph.graph)}")
+        logger.log(f"graph size: {size}")
+        logger.log(f"connected_components: {nx.number_connected_components(self.graph.graph)}")
 
     def find_relations_of(self, ref: str) -> List:
         nx_graph = self.graph.graph
