@@ -1,10 +1,12 @@
 import datetime
+from pathlib import Path
 
 
 TEE = True
 
 
-log_file = "logs/{str(datetime.datetime.now())}"
+log_file = Path(f"logs/{str(datetime.datetime.now())}")
+log_file.parent.mkdir(parents=True, exist_ok=True)
 
 
 def log(message: str):
