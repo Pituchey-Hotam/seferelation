@@ -14,31 +14,6 @@ SHEETS_PICKLE_PATH = Path("scrapper/downloads")
 GRAPH_PATH = Path("sefaria_400k_graph.pickle")
 
 
-def _build_graph_old_impl(sheets_pickle_path: Path, out_graph_path: Path):
-    with open(sheets_pickle_path, 'rb') as f:
-        sheets = pickle.load(f)
-    print("Loaded sheets")
-    sparser = SheetParser()
-
-    connected_components = []
-    i = 0
-    for sheet in sheets:
-        if not is_valid_sheet(sheet):
-            continue
-        size = sparser.add_sefaria_sheet_connections(sheet)
-        print(size)
-        i += 1
-        if i % 1000 == 0:
-            connected_components.append(nx.number_connected_components(sparser.graph.graph))
-            print(f"connected_components: {connected_components[-1]}")
-    connected_components.append(nx.number_connected_components(sparser.graph.graph))
-    print(f"connected_components: {connected_components}")
-    with open(out_graph_path, "wb") as f:
-        pickle.dump(sparser, f)
-    print(f"Saved graph to {out_graph_path}")
-    return sparser
-
-
 def build_graph(sheets_pickle_path: Path, out_graph_path: Path):
     sparser = SheetParser()
     if sheets_pickle_path.is_dir():
