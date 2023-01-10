@@ -3,6 +3,7 @@
 
 # Ignore python
 *.pyc
+*.egg-info
 
 # Ignore resources
 *.pickle
