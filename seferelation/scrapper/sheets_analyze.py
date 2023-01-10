@@ -61,7 +61,12 @@ def sample_dir_by_percent(path: Path, percent: float):
         pickle.dump(sampled_intervals, f)
 
 
-plot_histogram_by_fields("views", "views_histogram_sample.png")
+# with open("sheets_sample_5percent.pickle", "rb") as f:
+#     sample5p = pickle.load(f)
+# with open("sheets_sample_100.pickle", "wb") as f:
+#     pickle.dump(sample5p[:100], f)
+
+# plot_histogram_by_fields("views", "views_histogram_sample.png")
 # ls = _sample_file_by_percent("downloads/sheets_dump_0197500_0198000.pickle", 0.05)
 # sample_dir_by_percent("downloads", 0.05)
 

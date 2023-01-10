@@ -6,12 +6,12 @@ from pathlib import Path
 import pickle
 from tqdm import tqdm
 
-from sheet_parser import SheetParser, is_valid_sheet
+from .sheet_parser import SheetParser, is_valid_sheet
 
 
 SHEETS_PICKLE_PATH = Path("scrapper/downloads")
 # SHEETS_PICKLE_PATH = Path("scrapper/sheets_sample_5percent.pickle")
-GRAPH_PATH = Path("sefaria_400k_graph.pickle")
+GRAPH_PATH = Path("sefaria_400k_graph_2023_01_03.pickle")
 
 
 def build_graph(sheets_pickle_path: Path, out_graph_path: Path):
@@ -48,8 +48,8 @@ class CLIQueryManager:
     def _relations(self):
         ref = input("Enter a sefaria ref: ")
         relations = self.graph.find_relations_of(ref)
-        for rel in relations:
-            print(rel)
+        for i, rel in enumerate(relations):
+            print(f"{i:02}: {rel}")
 
     def start(self):
         cmd = input("Command: ")

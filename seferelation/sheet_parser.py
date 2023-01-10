@@ -8,8 +8,8 @@ from typing import List, Dict
 import math
 import itertools
 
-import logger
-from graph_manager import Graph
+from . import logger
+from .graph_manager import Graph
 
 
 def is_valid_sheet(sheet: Dict):
@@ -30,10 +30,6 @@ def _is_flat_ref(ref: str) -> bool:
     return "-" not in ref
 
 
-def _is_ref_range(ref: str) -> bool:
-    return "-" in ref
-
-
 def _flat_ref(ref: str):
     if "-" in ref:
         return ref[:ref.rfind(":")]
@@ -41,11 +37,16 @@ def _flat_ref(ref: str):
 
 
 def _ref_range(ref: str):
+    # TODO: handle refs like ref 1:1-2:10
     try:
-        start, end = ref[ref.rfind(":"):].split("-")
+        start, end = ref[ref.rfind(":") + 1:].split("-")
         return int(start), int(end)
     except Exception:
         return None
+
+
+def _is_ref_range(ref: str) -> bool:
+    return _ref_range(ref) != None
 
 
 def _extract_refs_range(ref: str) -> List[str]:
@@ -54,6 +55,24 @@ def _extract_refs_range(ref: str) -> List[str]:
     if not ref_range:
         return [flat]
     return [flat + str(i) for i in range(*ref_range)]
+
+
+def _is_ref_in_range(ref: str, ref_range: str):
+    if not _is_ref_range(ref_range):
+        return False
+    if not ref.startswith(_flat_ref(ref_range)):
+        return False
+    range_start, range_end = _ref_range(ref_range)
+    if _is_ref_range(ref):
+        start, end = _ref_range(ref)
+    else:
+        start = end = int(ref.split(":")[-1])
+    if (
+        range_start <= start <= range_end and
+        range_start <= end <= range_end
+    ):
+        return True
+    return False
 
 
 def _sheet_popularity(sheet: Dict):
@@ -101,6 +120,21 @@ class SheetParser:
         logger.log(f"connected_components: {nx.number_connected_components(self.graph.graph)}")
 
     def find_relations_of(self, ref: str) -> List:
+        nx_graph = self.graph.graph
+        if not ref in nx_graph:
+            return []
+        neighbors = list(nx_graph.neighbors(ref))
+        my_ranges = filter(lambda _range: _is_ref_in_range(ref, _range), neighbors)
+        for _range in my_ranges:
+            print(_range)
+            neighbors += nx_graph.neighbors(_range)
+        return list(sorted(
+            neighbors,
+            key=lambda other: nx_graph[ref][other].get("sefaria_popularity", 0),
+            reverse=True,
+        ))
+
+    def _find_relations_by_distance(self, ref: str) -> List:
         nx_graph = self.graph.graph
         if not ref in nx_graph:
             return []
