@@ -13,4 +13,7 @@ setup(
     install_requires=[
         "tqdm",
     ],
+    entrypoint={
+        'console_scripts': ['seferelation = seferelation.main:main']
+    },
 )

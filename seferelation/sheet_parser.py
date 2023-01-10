@@ -8,8 +8,8 @@ from typing import List, Dict
 import math
 import itertools
 
-from . import logger
-from .graph_manager import Graph
+from seferelation import logger
+from seferelation.graph_manager import Graph
 
 
 def is_valid_sheet(sheet: Dict):
@@ -123,14 +123,14 @@ class SheetParser:
         nx_graph = self.graph.graph
         if not ref in nx_graph:
             return []
-        neighbors = list(nx_graph.neighbors(ref))
+        neighbors = [(other, nx_graph[ref][other].get("sefaria_popularity", 0)) for other in nx_graph.neighbors(ref)]
         my_ranges = filter(lambda _range: _is_ref_in_range(ref, _range), neighbors)
         for _range in my_ranges:
             print(_range)
-            neighbors += nx_graph.neighbors(_range)
+            neighbors += [(other, nx_graph[_range][other].get("sefaria_popularity", 0)) for other in nx_graph.neighbors(_range)]
         return list(sorted(
             neighbors,
-            key=lambda other: nx_graph[ref][other].get("sefaria_popularity", 0),
+            key=lambda neighbor: neighbor[1],
             reverse=True,
         ))
 
