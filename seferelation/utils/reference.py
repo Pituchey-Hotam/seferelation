@@ -1,9 +1,30 @@
 from typing import Optional, Union, List, Tuple
 
+import urllib
+
 
 class Reference:
     def __init__(self, ref: str):
         self.ref = ref
+
+    def to_sefaria_link(self) -> str:
+        parsed_ref = "/" + self.ref
+        parsed_ref = parsed_ref.replace(" ", "_")
+        parsed_ref = urllib.parse.quote(parsed_ref)
+        return urllib.parse.urlunparse(urllib.parse.ParseResult(
+            scheme="https",
+            netloc="www.sefaria.org.il",
+            path=parsed_ref,
+            params="", query="", fragment=""
+        ))
+
+    @staticmethod
+    def from_sefaria_link(link: str) -> "Reference":
+        link = urllib.parse.unquote(link)
+        path = urllib.parse.urlparse(link).path
+        path = path.replace("_", " ")
+        path = path.replace("/", "")
+        return Reference(path)
 
     def is_flat(self) -> bool:
         return "-" not in self.ref

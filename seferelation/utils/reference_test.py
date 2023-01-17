@@ -1,6 +1,6 @@
 import pytest
 
-from .reference import Reference
+from seferelation.utils.reference import Reference
 
 
 @pytest.mark.parametrize("ref, expected", [
@@ -21,4 +21,13 @@ def test_ref_is_range(ref, expected):
 ])
 def test_is_ref_in_range(ref, ref_range, expected):
     assert Reference(ref).is_in_range(ref_range) == expected
+
+
+@pytest.mark.parametrize("link", [
+    "https://www.sefaria.org.il/Chofetz_Chaim%2C_Part_One%2C_The_Prohibition_Against_Lashon_Hara%2C_Principle_3.7",
+])
+def test_to_sefaria_from_sefaria_link(link):
+    ref = Reference.from_sefaria_link(link)
+    assert ref.is_range() == False
+    assert ref.to_sefaria_link() == link
 
