@@ -33,14 +33,23 @@ class Reference:
         return self.get_range() != None
 
     def make_flat(self) -> "Reference":
-        if "-" in self.ref:
+        if "-" not in self.ref:
+            return Reference(self.ref)
+        if ":" in self.ref:
             return Reference(self.ref[:self.ref.rfind(":")])
-        return Reference(self.ref)
+        else:
+            return Reference(self.ref[:self.ref.rfind(" ")])
 
     def get_range(self) -> Optional[Tuple[int, int]]:
         # TODO: handle refs like ref 1:1-2:10
         try:
-            start, end = self.ref[self.ref.rfind(":") + 1:].split("-")
+            if ":" in self.ref:
+                split_point = self.ref.rfind(":")
+            elif " " in self.ref:
+                split_point = self.ref.rfind(" ")
+            else:
+                return None
+            start, end = self.ref[split_point + 1:].split("-")
             return int(start), int(end)
         except ValueError:
             return None
@@ -50,7 +59,7 @@ class Reference:
         ref_range = self.get_range()
         if not ref_range:
             return [flat]
-        return [Reference(flat + str(i)) for i in range(*ref_range)]
+        return [Reference(flat.ref + str(i)) for i in range(*ref_range)]
 
     def is_in_range(self, ref_range: Union[str, "Reference"]) -> bool:
         # import ipdb; ipdb.set_trace()
@@ -63,8 +72,10 @@ class Reference:
         range_start, range_end = ref_range.get_range()
         if self.is_range():
             start, end = self.get_range()
-        else:
+        elif ":" in self.ref:
             start = end = int(self.ref.split(":")[-1])
+        else:
+            start = end = int(self.ref.split(" ")[-1])
         if (
             range_start <= start <= range_end and
             range_start <= end <= range_end
