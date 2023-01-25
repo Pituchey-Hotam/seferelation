@@ -12,3 +12,4 @@
 
 # Ignore dirs
 build/*
+.idea/*
