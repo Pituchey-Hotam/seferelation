@@ -28,7 +28,7 @@ def _extract_ref_from_sheet(sheet: Dict) -> Set[Reference]:
 
 
 def _sheet_popularity(sheet: Dict):
-    views = sheet.get("views")
+    views = sheet.get("views", 0)
     return int(math.log(views, 10))
 
 
@@ -72,10 +72,10 @@ class SheetParser:
 
     def find_relations_of(self, ref: str) -> List:
         nx_graph = self.graph.graph
-        if not ref in nx_graph:
+        if ref not in nx_graph:
             return []
         neighbors = [(other, nx_graph[ref][other].get("sefaria_popularity", 0)) for other in nx_graph.neighbors(ref)]
-        my_ranges = filter(lambda _range: _is_ref_in_range(ref, _range), neighbors)
+        my_ranges = filter(lambda _range: Reference(ref).is_in_range(_range[0]), neighbors)
         for _range in my_ranges:
             print(_range)
             neighbors += [(other, nx_graph[_range][other].get("sefaria_popularity", 0)) for other in nx_graph.neighbors(_range)]
