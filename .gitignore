@@ -10,3 +10,5 @@
 *.7z
 *.png
 
+# Ignore dirs
+build/*
