@@ -40,6 +40,9 @@ class Reference:
         else:
             return Reference(self.ref[:self.ref.rfind(" ")])
 
+    def parent(self) -> "Reference":
+        return Reference(self.ref.split(":")[0])
+
     def get_range(self) -> Optional[Tuple[int, int]]:
         # TODO: handle refs like ref 1:1-2:10
         try:
@@ -66,7 +69,7 @@ class Reference:
         if not isinstance(ref_range, Reference):
             ref_range = Reference(ref_range)
         if not ref_range.is_range():
-            return False
+            return self.parent() == ref_range
         if not self.ref.startswith(ref_range.make_flat().ref):
             return False
         range_start, range_end = ref_range.get_range()
@@ -82,6 +85,9 @@ class Reference:
         ):
             return True
         return False
+
+    def __eq__(self, other) -> bool:
+        return self.ref == other.ref
 
     def __hash__(self):
         return hash(self.ref)

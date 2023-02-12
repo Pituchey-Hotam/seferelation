@@ -20,6 +20,7 @@ def test_ref_is_range(ref, expected):
     ("Book 2:7", "Book 3:3-9", False),
     ("Book 2", "Book 3", False),
     ("Book 2", "Book 1-3", True),
+    ("Book 2:7", "Book 2", True),
 ])
 def test_is_ref_in_range(ref, ref_range, expected):
     assert Reference(ref).is_in_range(ref_range) == expected
