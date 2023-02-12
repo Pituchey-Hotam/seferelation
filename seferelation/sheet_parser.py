@@ -75,7 +75,7 @@ class SheetParser:
         if ref not in nx_graph:
             return []
         neighbors = [(other, nx_graph[ref][other].get("sefaria_popularity", 0)) for other in nx_graph.neighbors(ref)]
-        my_ranges = filter(lambda _range: Reference(ref).is_in_range(_range[0]), neighbors)
+        my_ranges = [r[0] for r in neighbors if Reference(ref).is_in_range(r[0])]
         for _range in my_ranges:
             print(_range)
             neighbors += [(other, nx_graph[_range][other].get("sefaria_popularity", 0)) for other in nx_graph.neighbors(_range)]
