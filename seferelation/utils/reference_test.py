@@ -26,6 +26,14 @@ def test_is_ref_in_range(ref, ref_range, expected):
     assert Reference(ref).is_in_range(ref_range) == expected
 
 
+@pytest.mark.parametrize("ref, ref_parent", [
+    ("Book 2:7", "Book 2"),
+    ("Book 2:7-9", "Book 2"),
+    ("Book 2", "Book 2"),
+])
+def test_ref_parent(ref, ref_parent):
+    assert Reference(ref).parent() == ref_parent
+
 @pytest.mark.parametrize("link", [
     "https://www.sefaria.org.il/Chofetz_Chaim%2C_Part_One%2C_The_Prohibition_Against_Lashon_Hara%2C_Principle_3.7",
 ])

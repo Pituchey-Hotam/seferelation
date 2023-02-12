@@ -86,7 +86,9 @@ class Reference:
             return True
         return False
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Union[str, "Reference"]) -> bool:
+        if isinstance(other, str):
+            return self.ref == other
         return self.ref == other.ref
 
     def __hash__(self):
