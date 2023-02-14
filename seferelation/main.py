@@ -38,6 +38,7 @@ class CLIQueryManager:
         self.commands_map = {
             "help": self._help,
             "relations": self._relations,
+            "debug": self._debug,
         }
 
     def _help(self):
@@ -49,9 +50,16 @@ class CLIQueryManager:
 
     def _relations(self):
         ref = input("Enter a sefaria ref: ")
-        relations = self.graph.find_relations_of(ref)
+        ref = Reference.from_sefaria_link(ref)
+        print(f"Sefaria ref is: {ref.ref}")
+        relations = self.graph.find_relations_of(ref.ref)
         for i, rel in enumerate(relations):
-            print(f"{i:02}: {rel}")
+            sefaria_link = Reference(rel).to_sefaria_link()
+            print(f"{i:02}: {sefaria_link}")
+
+    def _debug(self):
+        print("debugging, use self.graph")
+        import ipdb; ipdb.set_trace()
 
     def start(self):
         cmd = input("Command: ")
