@@ -6,7 +6,9 @@ from pathlib import Path
 import pickle
 from tqdm import tqdm
 
-from .sheet_parser import SheetParser, is_valid_sheet
+from seferelation.sheet_parser import SheetParser, is_valid_sheet
+from seferelation.utils import Reference
+
 
 
 SHEETS_PICKLE_PATH = Path("scrapper/downloads")

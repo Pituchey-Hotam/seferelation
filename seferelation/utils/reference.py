@@ -1,6 +1,18 @@
 from typing import Optional, Union, List, Tuple
 
+import re
 import urllib
+
+
+def _str_replace_range(
+    string: str, find: str, replace: str, start:int=None, end:int=None
+) -> str:
+    start = start or 0
+    end = end or len(string)
+    print(string[:start])
+    print(string[start:end].replace(find, replace))
+    print(string[end:])
+    return string[:start] + string[start:end].replace(find, replace) + string[end:]
 
 
 class Reference:
@@ -9,6 +21,10 @@ class Reference:
 
     def to_sefaria_link(self) -> str:
         parsed_ref = "/" + self.ref
+        number_idx = re.search(r'\d', parsed_ref)
+        if number_idx != None:
+            parsed_ref = _str_replace_range(parsed_ref, " ", ".", start=number_idx.start() - 1)
+            parsed_ref = _str_replace_range(parsed_ref, ":", ".", start=number_idx.start())
         parsed_ref = parsed_ref.replace(" ", "_")
         parsed_ref = urllib.parse.quote(parsed_ref)
         return urllib.parse.urlunparse(urllib.parse.ParseResult(
@@ -23,6 +39,10 @@ class Reference:
         link = urllib.parse.unquote(link)
         path = urllib.parse.urlparse(link).path
         path = path.replace("_", " ")
+        number_idx = re.search(r'\d', path)
+        if number_idx != None:
+            path = _str_replace_range(path, ".", ":", start=number_idx.start())
+        path = path.replace(".", " ")
         path = path.replace("/", "")
         return Reference(path)
 

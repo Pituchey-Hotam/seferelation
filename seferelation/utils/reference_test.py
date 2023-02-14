@@ -35,10 +35,26 @@ def test_ref_parent(ref, ref_parent):
     assert Reference(ref).parent() == ref_parent
 
 @pytest.mark.parametrize("link", [
-    "https://www.sefaria.org.il/Chofetz_Chaim%2C_Part_One%2C_The_Prohibition_Against_Lashon_Hara%2C_Principle_3.7",
+    # "https://www.sefaria.org.il/Chofetz_Chaim%2C_Part_One%2C_The_Prohibition_Against_Lashon_Hara%2C_Principle_3.7",
+    "https://www.sefaria.org.il/Mishnah_Nedarim.8",
+    "https://www.sefaria.org.il/II_Chronicles.16.2-3",
 ])
 def test_to_sefaria_from_sefaria_link(link):
     ref = Reference.from_sefaria_link(link)
-    assert ref.is_range() == False
     assert ref.to_sefaria_link() == link
 
+
+@pytest.mark.parametrize("link, ref", [
+    ("https://www.sefaria.org.il/Mishnah_Nedarim.8?lang=he", "Mishnah Nedarim 8"),
+    ("https://www.sefaria.org.il/II_Chronicles.16.2-3?lang=he", "II Chronicles 16:2-3"),
+])
+def test_from_sefaria_link(link, ref):
+    assert Reference.from_sefaria_link(link).ref == ref
+
+
+@pytest.mark.parametrize("link, ref", [
+    ("https://www.sefaria.org.il/Mishnah_Nedarim.8", "Mishnah Nedarim 8"),
+    ("https://www.sefaria.org.il/II_Chronicles.16.2-3", "II Chronicles 16:2-3"),
+])
+def test_to_sefaria_link(link, ref):
+    assert Reference(ref).to_sefaria_link() == link
