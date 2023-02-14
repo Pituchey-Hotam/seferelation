@@ -54,8 +54,9 @@ class CLIQueryManager:
         print(f"Sefaria ref is: {ref.ref}")
         relations = self.graph.find_relations_of(ref.ref)
         for i, rel in enumerate(relations):
+            rel, priority = rel
             sefaria_link = Reference(rel).to_sefaria_link()
-            print(f"{i:02}: {sefaria_link}")
+            print(f"{i:02}: ({priority:02}) {sefaria_link}")
 
     def _debug(self):
         print("debugging, use self.graph")
