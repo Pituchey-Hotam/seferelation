@@ -9,9 +9,6 @@ def _str_replace_range(
 ) -> str:
     start = start or 0
     end = end or len(string)
-    print(string[:start])
-    print(string[start:end].replace(find, replace))
-    print(string[end:])
     return string[:start] + string[start:end].replace(find, replace) + string[end:]
 
 
