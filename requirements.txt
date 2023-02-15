@@ -1,2 +1,4 @@
 tqdm
 networkx
+fastapi
+uvicorn
