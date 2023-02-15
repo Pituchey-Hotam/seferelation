@@ -1,6 +1,8 @@
 from typing import Optional
 
 import os
+import sys
+sys.path.append("/mnt/c/users/ykane/Documents/seferelation/seferelation")
 
 from pathlib import Path
 import pickle
@@ -74,7 +76,7 @@ class CLIQueryManager:
 
 
 def main():
-    print("hi")
+    print("hi2")
     if GRAPH_PATH.exists():
         with GRAPH_PATH.open("rb") as f:
             graph = pickle.load(f)
