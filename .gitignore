@@ -13,3 +13,6 @@
 # Ignore dirs
 build/*
 .idea/*
+
+# Ignore node_modules
+node_modules
