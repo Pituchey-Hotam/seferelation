@@ -1,8 +1,6 @@
 from typing import Optional
 
 import os
-import sys
-sys.path.append("/mnt/c/users/ykane/Documents/seferelation/seferelation")
 
 from pathlib import Path
 import pickle
