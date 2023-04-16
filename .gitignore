@@ -11,7 +11,7 @@
 *.png
 
 # Ignore dirs
-build/*
+build/
 .idea/*
 
 # Ignore node_modules
