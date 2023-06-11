@@ -6,7 +6,7 @@ function ApiList() {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetch(`http://localhost:8000/relations?sefaria_link=${searchTerm}`)
+        fetch(`http://3.78.87.97:8000/relations?sefaria_link=${searchTerm}`)
             .then(response => response.json())
             .then(data => setData(data));
     }, [searchTerm]);
