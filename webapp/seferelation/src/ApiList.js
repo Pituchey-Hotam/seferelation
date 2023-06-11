@@ -24,7 +24,7 @@ function ApiList() {
         </label>
         <ul>
         {relations.map(item => (
-            <li key={item[0]}>{item[1]}: {item[0]}</li>
+            <li key={item[0]}>{item[1]}: <a href={item[0]}> item[0]</a></li>
         ))}
         </ul>
         </div>
