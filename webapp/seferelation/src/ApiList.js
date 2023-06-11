@@ -7,7 +7,7 @@ function ApiList() {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        axios.get(`http://3.78.87.97:8000/relations?sefaria_link=${searchTerm}`)
+        axios.get(`/api/relations?sefaria_link=${searchTerm}`)
             .then(response => setData(response.data));
     }, [searchTerm]);
 
