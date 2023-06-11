@@ -26,7 +26,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/relations")
+@app.get("/api/relations")
 def read_item(sefaria_link: str):
     ref = Reference.from_sefaria_link(sefaria_link)
     print(f"Sefaria ref is: {ref.ref}")
