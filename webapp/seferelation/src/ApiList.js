@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 
 function ApiList() {
@@ -6,9 +7,8 @@ function ApiList() {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetch(`http://3.78.87.97:8000/relations?sefaria_link=${searchTerm}`)
-            .then(response => response.json())
-            .then(data => setData(data));
+        axios.get(`http://3.78.87.97:8000/relations?sefaria_link=${searchTerm}`)
+            .then(response => setData(response.data));
     }, [searchTerm]);
 
     function handleSearchChange(event) {
