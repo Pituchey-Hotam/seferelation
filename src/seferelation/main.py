@@ -60,7 +60,7 @@ class CLIQueryManager:
 
     def _debug(self):
         print("debugging, use self.graph")
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
 
     def start(self):
         cmd = input("Command: ")
