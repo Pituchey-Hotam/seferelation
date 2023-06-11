@@ -12,6 +12,10 @@ def _str_replace_range(
     return string[:start] + string[start:end].replace(find, replace) + string[end:]
 
 
+def _is_gmara_page(ref: str) -> bool:
+    return ref[:-1].isnumeric() and ref[-1] in ["a", "b"]
+
+
 class Reference:
     def __init__(self, ref: str):
         self.ref = ref
@@ -81,6 +85,15 @@ class Reference:
             return [flat]
         return [Reference(flat.ref + str(i)) for i in range(*ref_range)]
 
+    @staticmethod
+    def _str_to_range_index(ref: str) -> Union[int, float]:
+        if ref.isnumeric():
+            return int(ref)
+        elif _is_gmara_page(ref):
+            return int(ref[:-1]) + (0.5 if ref[-1] == "b" else 0)
+        else:
+            return -1
+
     def is_in_range(self, ref_range: Union[str, "Reference"]) -> bool:
         # import ipdb; ipdb.set_trace()
         if not isinstance(ref_range, Reference):
@@ -93,9 +106,9 @@ class Reference:
         if self.is_range():
             start, end = self.get_range()
         elif ":" in self.ref:
-            start = end = int(self.ref.split(":")[-1])
+            start = end = self._str_to_range_index(self.ref.split(":")[-1])
         else:
-            start = end = int(self.ref.split(" ")[-1])
+            start = end = self._str_to_range_index(self.ref.split(" ")[-1])
         if (
             range_start <= start <= range_end and
             range_start <= end <= range_end

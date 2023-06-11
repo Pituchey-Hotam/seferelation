@@ -26,6 +26,16 @@ def test_is_ref_in_range(ref, ref_range, expected):
     assert Reference(ref).is_in_range(ref_range) == expected
 
 
+@pytest.mark.parametrize("ref, ref_range, expected", [
+    ("Berakhot 2b:7", "Berakhot 2b:3-9", True),
+    ("Berakhot 5a:3", "Berakhot 5b:3-7", False),
+    ("Berakhot 2a:7", "Teanit 2a:3-9", False),
+    # ("Berakhot 5a:3", "Berakhot 4b:27-5a7", True), # TODO: not implemented
+])
+def test_is_ref_in_range_for_gmara(ref, ref_range, expected):
+    assert Reference(ref).is_in_range(ref_range) == expected
+
+
 @pytest.mark.parametrize("ref, ref_parent", [
     ("Book 2:7", "Book 2"),
     ("Book 2:7-9", "Book 2"),
