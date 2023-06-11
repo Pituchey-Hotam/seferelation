@@ -3,12 +3,12 @@ import axios from 'axios';
 
 
 function ApiList() {
-    const [data, setData] = useState([]);
+    const [relations, setRelations] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         axios.get(`/api/relations?sefaria_link=${searchTerm}`)
-            .then(response => setData(response.data));
+            .then(response => setRelations(response.data.relations));
     }, [searchTerm]);
 
     function handleSearchChange(event) {
@@ -23,8 +23,8 @@ function ApiList() {
         <input type="text" value={searchTerm} onChange={handleSearchChange} />
         </label>
         <ul>
-        {data.map(item => (
-            <li key={item.id}>{item.name}</li>
+        {relations.map(item => (
+            <li key={item[0]}>{item[1]}: {item[0]}</li>
         ))}
         </ul>
         </div>
