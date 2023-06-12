@@ -17,9 +17,14 @@ function ApiList() {
 
     return (
         <div>
-        <h1>API List</h1>
+        <h1>חיפוש מקורות לימוד</h1>
         <label>
         Search relations with seferelation api (by @ykaner):
+        <p/>
+        בשביל לחפש העתיקו קישור מספריא לדבר שאותו אתם לומדים, לדוגמא: 
+        <p/>
+        https://www.sefaria.org.il/Genesis.1.1
+        <p/>
         <input type="text" value={searchTerm} onChange={handleSearchChange} />
         </label>
         <ul>
