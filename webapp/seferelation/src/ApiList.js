@@ -44,8 +44,9 @@ class ApiList extends Component {
   }
 
   handleSearchMore = link => {
-    this.setState({ userInput: { sefaria_link: link } }, () => {
-      this.handleSearchSubmit(event);
+    this.setState({
+      userInput: { sefaria_link: link }, 
+      searchTerm: link,
     });
   }
 
