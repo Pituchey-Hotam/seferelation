@@ -44,7 +44,9 @@ class ApiList extends Component {
   }
 
   handleSearchMore = link => {
-    this.setState({ userInput: { sefaria_link: link } });
+    this.setState({ userInput: { sefaria_link: link } }, () => {
+      this.handleSearchSubmit(event);
+    });
   }
 
   render() {
@@ -75,7 +77,14 @@ class ApiList extends Component {
           rowKey={item => item.relation}
         >
           <Column title="Priority" dataIndex="priority" key="priority" />
-          <Column title="Link" dataIndex="relation" key="relation" />
+          <Column
+            title="Link"
+            dataIndex="relation"
+            key="relation"
+            render={(text, record) => (
+              <a href={text}>{text}</a>
+            )}
+          />
           <Column
             title="Search More"
             key="searchMore"
