@@ -7,7 +7,7 @@ const app = express();
 app.use(
   '/api',
   createProxyMiddleware({
-    target: 'http://3.78.87.97/:8000',
+    target: 'http://172.26.8.166:8000',
     changeOrigin: true,
   })
 );
