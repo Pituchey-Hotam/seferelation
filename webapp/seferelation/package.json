@@ -20,7 +20,7 @@
     "build": "react-scripts build --proxy",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "node server.js"
+    "serve": "node src/server.js"
   },
   "eslintConfig": {
     "extends": [
