@@ -39,7 +39,6 @@ class ApiList extends Component {
 
   handleSearchSubmit = event => {
     this.setState({ searchTerm: this.state.userInput.sefaria_link });
-    event.preventDefault();
   }
 
   render() {
@@ -69,7 +68,7 @@ class ApiList extends Component {
           header={<Typography.Title level={3}>Results</Typography.Title>}
           dataSource={relations}
           renderItem={item => (
-            <Item>
+            <Item id={item[1]}>
               <Typography.Text mark><a href={item[0]}>{item[1]}</a></Typography.Text> {item[0]}
             </Item>
           )}
