@@ -32,8 +32,11 @@ def read_item(sefaria_link: str):
     print(f"Sefaria ref is: {ref.ref}")
     relations = graph.find_relations_of(ref.ref)
     relations = [
-        (Reference(rel).to_sefaria_link(), priority) for rel, priority
-        in relations
+        {
+            "relation": Reference(rel).to_sefaria_link(),
+            "priority": priority,
+        }
+        for rel, priority in relations
     ]
     return {"relations": relations}
 

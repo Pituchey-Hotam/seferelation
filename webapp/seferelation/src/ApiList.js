@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Table, Typography } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 
 const { Column } = Table;
 
@@ -72,15 +71,15 @@ class ApiList extends Component {
 
         <Table
           dataSource={relations}
-          rowKey={item => item[1]}
+          rowKey={item => item.relation}
         >
-          <Column title="Score" dataIndex={0} key={0} />
-          <Column title="Link" dataIndex={1} key={1} />
+          <Column title="Priority" dataIndex="priority" key="priority" />
+          <Column title="Link" dataIndex="relation" key="relation" />
           <Column
             title="Search More"
             key="searchMore"
             render={(text, record) => (
-              <Button icon={<SearchOutlined />} onClick={() => this.handleSearchMore(record[1])} />
+              <Button icon={<SearchOutlined />} onClick={() => this.handleSearchMore(record.relation)} />
             )}
           />
         </Table>
