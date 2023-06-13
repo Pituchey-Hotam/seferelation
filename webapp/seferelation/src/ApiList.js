@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, List, Typography } from 'antd';
+import { Form, Input, Button, Table, Typography } from 'antd';
 
-const { Item } = List;
+const { Column } = Table;
 
 class ApiList extends Component {
   constructor(props) {
@@ -39,6 +39,11 @@ class ApiList extends Component {
 
   handleSearchSubmit = event => {
     this.setState({ searchTerm: this.state.userInput.sefaria_link });
+    event.preventDefault();
+  }
+
+  handleSearchMore = link => {
+    this.setState({ userInput: { sefaria_link: link } });
   }
 
   render() {
@@ -64,15 +69,20 @@ class ApiList extends Component {
           </Form.Item>
         </Form>
 
-        <List
-          header={<Typography.Title level={3}>Results</Typography.Title>}
+        <Table
           dataSource={relations}
-          renderItem={item => (
-            <Item id={item[1]}>
-              <Typography.Text mark><a href={item[0]}>{item[1]}</a></Typography.Text> {item[0]}
-            </Item>
-          )}
-        />
+          rowKey={item => item[1]}
+        >
+          <Column title="Score" dataIndex={0} key={0} />
+          <Column title="Link" dataIndex={1} key={1} />
+          <Column
+            title="Search More"
+            key="searchMore"
+            render={(text, record) => (
+              <Button icon={<SearchOutlined />} onClick={() => this.handleSearchMore(record[1])} />
+            )}
+          />
+        </Table>
       </div>
     );
   }
