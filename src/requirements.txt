@@ -2,3 +2,4 @@ tqdm
 networkx
 fastapi
 uvicorn
+pytest
