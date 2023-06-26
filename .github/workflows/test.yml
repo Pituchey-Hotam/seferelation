@@ -26,6 +26,6 @@ jobs:
 
       - name: Test Frontend
         run: |
-          cd frontend
+          cd webapp/seferelation
           npm install
           npm test
