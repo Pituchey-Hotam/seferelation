@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: ./webapp/seferelation
+      dockerfile: Dockerfile.prod
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src:/app/src
+
+  backend:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - frontend
+    volumes:
+      - ./backend/src/sefer/graph-model.pickle:/app/sefer/graph-model.pickle
