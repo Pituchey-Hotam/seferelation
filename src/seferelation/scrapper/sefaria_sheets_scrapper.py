@@ -10,7 +10,7 @@ INTERVAL_SIZE = 500
 
 
 def download_range(start, end):
-    target_path = f"downloads/sheets_dump_{start:07}_{end:07}.pickle"
+    target_path = f"downloads/sheet_dumps/sheets_dump_{start:07}_{end:07}.pickle"
     if Path(target_path).exists():
         print(f"already done: {target_path}")
         return
