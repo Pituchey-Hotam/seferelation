@@ -3,3 +3,5 @@ networkx
 fastapi
 uvicorn
 pypdf
+asyncio
+aiohttp
