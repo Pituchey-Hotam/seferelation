@@ -1,6 +1,5 @@
 from typing import List, Union
 
-import requests
 import pickle
 from pypdf import PdfReader
 import re
@@ -62,19 +61,18 @@ def _heb_source_to_sefaria_name(heb_ref: str) -> str:
     return "pasten"
 
 
-def _is_gematria(word: str) -> bool:
-    gershaim = set("'\"")
-    return bool(
-        re.match(r"^[קרשת]?[יכלמנסעפצ]?['\"]?[אבגדהוזחט]?[']?$", word)
-        and not set(word) == gershaim
-        and len(list(filter(lambda c: c in gershaim, word))) < 2
-    )
-
-def _is_gmara_index(word: str) -> bool:
-    return re.match(r"^[קרשת]?[יכלמנסעפצ]??[אבגדהוזחט]?[.:]?$", word)
-
 def _get_possible_indexes(heb_ref: str) -> List[Union[int, str]]:
     words = re.findall(r"[\w.'\"]+", heb_ref)
+    indexes = []
+    GEMATRIA = "gematria"
+    GMARA_DAF = "gmara_daf"
+    for word in words:
+        if _is_gematria(word):
+            indexes.append(GEMATRIA)
+        elif _is_gmara_index(word):
+            indexes.append(GMARA_DAF)
+        else:
+            indexes.append("")
     
 
 
