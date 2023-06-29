@@ -1,5 +1,6 @@
 # Welcome
-This project is a tool to recommend what you should learn.
+This project is a tool to recommend what you should learn.  
+Online beta version is available [here (bit.ly/seferelation)](https://bit.ly/seferelation)
 
 # Developers Installation
 First, clone this repository and go to the cloned directory.
