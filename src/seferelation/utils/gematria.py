@@ -22,9 +22,20 @@ def gematria_calc(word: str) -> int:
     return value
 
 
-
 def is_gmara_index(word: str) -> bool:
     return bool(
         re.match(r"^[קרשת]?[יכלמנסעפצ]?[אבגדהוזחט]?\s?[.:]?$", word)
         and re.match(r"[א-ת]", word)
     )
+
+
+def gmara_cacl_index(word: str) -> str:
+    daf = str(gematria_calc(word))
+    if "." in word:
+        daf_side = "a"
+    elif ":" in word:
+        daf_side = "b"
+    else:
+        daf_side = "a"
+    return daf + daf_side
+

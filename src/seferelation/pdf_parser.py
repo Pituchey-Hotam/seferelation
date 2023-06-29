@@ -66,22 +66,19 @@ def _heb_source_to_sefaria_name(heb_ref: str) -> str:
 def _get_possible_indexes(heb_ref: str) -> List[Union[int, str]]:
     words = re.findall(r"[\w.'\"]+", heb_ref)
     indexes = []
-    GEMATRIA = "gematria"
-    GMARA_DAF = "gmara_daf"
     for word in words:
-        if _is_gematria(word):
-            indexes.append(GEMATRIA)
-        elif _is_gmara_index(word):
-            indexes.append(GMARA_DAF)
+        if gematria._is_gematria(word):
+            indexes.append(gematria.gematria_calc(word))
+        elif gematria._is_gmara_index(word):
+            indexes.append(gematria.gmara_calc_index(word))
         else:
             indexes.append("")
     
 
-
 def translate_source_to_sefaria(heb_ref: str) -> str:
     name = _heb_source_to_sefaria_name(heb_ref)
     indexes = _get_possible_indexes(heb_ref)
-
+    return name
 
 
 if __name__ == "__main__":
