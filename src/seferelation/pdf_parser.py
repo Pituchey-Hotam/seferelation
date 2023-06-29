@@ -4,6 +4,8 @@ import pickle
 from pypdf import PdfReader
 import re
 
+from seferelation.utils import gematria
+
 
 def _visitor_body(text, cm, tm, font_dict, font_size):
     pass
