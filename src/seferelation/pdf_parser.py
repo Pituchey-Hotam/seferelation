@@ -1,6 +1,7 @@
-from typing import List
+from typing import List, Union
 
 import requests
+import pickle
 from pypdf import PdfReader
 import re
 
@@ -35,17 +36,51 @@ def parse_pdf_to_text_sources(path: str) -> List[str]:
 
 def parse_pdf_to_sefaria(path: str) -> List[str]:
     source_text = parse_pdf_to_text_sources(path)
+    refs = []
     for source in source_text:
         sefaria_ref = translate_source_to_sefaria(source)
-        print(f"souce:\t{source}\nsefaria:\t{sefaria_ref}")
+        refs.append(sefaria_ref)
+        # print(f"souce:\t{source}\nsefaria:\t{sefaria_ref}")
+    print(f"total: {len(source_text)}")
+    refs = set(refs)
+    print("refs: ")
+    print(len(refs))
+    print(refs)
+    print()
+
+
+with open("scrapper/sefaria_he_titles_2023_06_27.pickle", "rb") as f:
+    he_titles = pickle.load(f)
+
+def _heb_source_to_sefaria_name(heb_ref: str) -> str:
+    words = heb_ref.split(" ")
+    for i in range(len(words)):
+        for j in range(len(words)):
+            sub_ref = " ".join(words[i:j+1])
+            if sub_ref in he_titles:
+                return he_titles[sub_ref]
+    return "pasten"
+
+
+def _is_gematria(word: str) -> bool:
+    gershaim = set("'\"")
+    return bool(
+        re.match(r"^[קרשת]?[יכלמנסעפצ]?['\"]?[אבגדהוזחט]?[']?$", word)
+        and not set(word) == gershaim
+        and len(list(filter(lambda c: c in gershaim, word))) < 2
+    )
+
+def _is_gmara_index(word: str) -> bool:
+    return re.match(r"^[קרשת]?[יכלמנסעפצ]??[אבגדהוזחט]?[.:]?$", word)
+
+def _get_possible_indexes(heb_ref: str) -> List[Union[int, str]]:
+    words = re.findall(r"[\w.'\"]+", heb_ref)
+    
 
 
 def translate_source_to_sefaria(heb_ref: str) -> str:
-    url = f"https://www.sefaria.org/api/name/{heb_ref}"
-    response = requests.get(url).json()
-    if response["is_ref"] == True:
-        return response["ref"]
-    return "pasten"
+    name = _heb_source_to_sefaria_name(heb_ref)
+    indexes = _get_possible_indexes(heb_ref)
 
 
 
