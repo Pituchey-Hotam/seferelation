@@ -41,3 +41,13 @@ def test_gematria_calc(word, value):
 ])
 def test_is_gmara_index(gmara, expected):
     assert gematria.is_gmara_index(gmara) == expected
+
+
+@pytest.mark.parametrize("gmara, index", [
+    ("ב", "2a"),
+    ("קכא", "121a"),
+    ("יד:", "14b"),
+    ("ג .", "3a"),
+])
+def test_gmara_calc_index(gmara, index):
+    assert gematria.gmara_calc_index(gmara) == index

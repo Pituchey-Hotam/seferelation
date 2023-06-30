@@ -29,7 +29,7 @@ def is_gmara_index(word: str) -> bool:
     )
 
 
-def gmara_cacl_index(word: str) -> str:
+def gmara_calc_index(word: str) -> str:
     daf = str(gematria_calc(word))
     if "." in word:
         daf_side = "a"
