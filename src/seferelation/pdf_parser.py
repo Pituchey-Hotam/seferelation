@@ -4,7 +4,7 @@ import pickle
 from pypdf import PdfReader
 import re
 
-from seferelation.utils import gematria
+from seferelation.utils import gematria, reference
 
 
 def _visitor_body(text, cm, tm, font_dict, font_size):
@@ -48,6 +48,7 @@ def parse_pdf_to_sefaria(path: str) -> List[str]:
     print(len(refs))
     print(refs)
     print()
+    print([reference.Reference(ref).to_sefaria_link() for ref in refs])
 
 
 with open("scrapper/sefaria_he_titles_2023_06_27.pickle", "rb") as f:
@@ -60,25 +61,26 @@ def _heb_source_to_sefaria_name(heb_ref: str) -> str:
             sub_ref = " ".join(words[i:j+1])
             if sub_ref in he_titles:
                 return he_titles[sub_ref]
-    return "pasten"
+    return ""
 
 
-def _get_possible_indexes(heb_ref: str) -> List[Union[int, str]]:
+def _get_possible_indexes(heb_ref: str) -> List[str]:
     words = re.findall(r"[\w.'\"]+", heb_ref)
     indexes = []
     for word in words:
-        if gematria._is_gematria(word):
-            indexes.append(gematria.gematria_calc(word))
-        elif gematria._is_gmara_index(word):
+        if gematria.is_gematria(word):
+            indexes.append(str(gematria.gematria_calc(word)))
+        elif gematria.is_gmara_index(word):
             indexes.append(gematria.gmara_calc_index(word))
-        else:
-            indexes.append("")
+    return indexes
     
 
 def translate_source_to_sefaria(heb_ref: str) -> str:
     name = _heb_source_to_sefaria_name(heb_ref)
+    if not name:
+        return name
     indexes = _get_possible_indexes(heb_ref)
-    return name
+    return ".".join([name] + indexes)
 
 
 if __name__ == "__main__":
