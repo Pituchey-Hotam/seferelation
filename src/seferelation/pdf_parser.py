@@ -5,6 +5,7 @@ from pypdf import PdfReader
 import re
 
 from seferelation.utils import gematria, reference
+from seferelation.scrapper.sefaria_he_titles_extender import normalize_he_ref
 
 
 def _visitor_body(text, cm, tm, font_dict, font_size):
@@ -51,7 +52,7 @@ def parse_pdf_to_sefaria(path: str) -> List[str]:
     print([reference.Reference(ref).to_sefaria_link() for ref in refs])
 
 
-with open("scrapper/sefaria_he_titles_2023_06_27.pickle", "rb") as f:
+with open("scrapper/sefaria_he_titles_ext_3.pickle", "rb") as f:
     he_titles = pickle.load(f)
 
 def _heb_source_to_sefaria_name(heb_ref: str) -> str:
@@ -59,8 +60,9 @@ def _heb_source_to_sefaria_name(heb_ref: str) -> str:
     for i in range(len(words)):
         for j in range(len(words)):
             sub_ref = " ".join(words[i:j+1])
-            if sub_ref in he_titles:
-                return he_titles[sub_ref]
+            sub_ref_normal = normalize_he_ref(sub_ref)
+            if sub_ref_normal in he_titles:
+                return he_titles[sub_ref_normal]
     return ""
 
 
