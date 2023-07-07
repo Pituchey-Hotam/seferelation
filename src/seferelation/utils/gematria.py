@@ -3,7 +3,9 @@ import re
 def is_gematria(word: str) -> bool:
     gershaim = set("'\"")
     return bool(
-        re.match(r"^[קרשת]?[יכלמנסעפצ]?['\"]?[אבגדהוזחט]?[']?$", word)
+        (re.match(r"^[קרשת]?[יכלמנסעפצ]?['\"]?[אבגדהוזחט]?[']?$", word)
+            or re.match(r"^[קרשת]?ט?['\"]?[וז][']?$", word)
+        )
         and not set(word) == gershaim
         and len(list(filter(lambda c: c in gershaim, word))) < 2
     )
@@ -24,7 +26,9 @@ def gematria_calc(word: str) -> int:
 
 def is_gmara_index(word: str) -> bool:
     return bool(
-        re.match(r"^[קרשת]?[יכלמנסעפצ]?[אבגדהוזחט]?\s?[.:]?$", word)
+        ( re.match(r"^[קרשת]?[יכלמנסעפצ]?[אבגדהוזחט]?\s?[.:]?$", word)
+            or re.match(r"^[קרשת]?(טו|טז)\s?[.:]?$", word)
+        )
         and re.match(r"[א-ת]", word)
     )
 
