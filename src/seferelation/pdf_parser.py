@@ -1,8 +1,11 @@
-from typing import List
+from typing import List, Union
 
-import requests
+import pickle
 from pypdf import PdfReader
 import re
+
+from seferelation.utils import gematria, reference
+from seferelation.scrapper.sefaria_he_titles_extender import normalize_he_ref
 
 
 def _visitor_body(text, cm, tm, font_dict, font_size):
@@ -10,6 +13,8 @@ def _visitor_body(text, cm, tm, font_dict, font_size):
 
 
 def _is_source_line(line: str) -> bool:
+    if len(line) < 5:
+        return False
     if re.match(r'^\d*\s?\.', line):
         return True
     if re.match(r'^[א-ת]?[א-ת]?\s?\.', line):
@@ -35,18 +40,52 @@ def parse_pdf_to_text_sources(path: str) -> List[str]:
 
 def parse_pdf_to_sefaria(path: str) -> List[str]:
     source_text = parse_pdf_to_text_sources(path)
+    refs = []
     for source in source_text:
         sefaria_ref = translate_source_to_sefaria(source)
-        print(f"souce:\t{source}\nsefaria:\t{sefaria_ref}")
+        refs.append(sefaria_ref)
+        # print(f"souce:\t{source}\nsefaria:\t{sefaria_ref}")
+    print(f"total: {len(source_text)}")
+    refs = set(refs)
+    print("refs: ")
+    print(len(refs))
+    print(refs)
+    print()
+    print([reference.Reference(ref).to_sefaria_link() for ref in refs])
+    return list(refs)
 
+
+with open("scrapper/sefaria_he_titles_ext_3.pickle", "rb") as f:
+    he_titles = pickle.load(f)
+
+def _heb_source_to_sefaria_name(heb_ref: str) -> str:
+    words = heb_ref.split(" ")
+    for i in range(len(words)):
+        for j in range(len(words)):
+            sub_ref = " ".join(words[i:j+1])
+            sub_ref_normal = normalize_he_ref(sub_ref)
+            if sub_ref_normal in he_titles:
+                return he_titles[sub_ref_normal]
+    return ""
+
+
+def _get_possible_indexes(heb_ref: str) -> List[str]:
+    words = re.findall(r"[\w.'\"]+", heb_ref)
+    indexes = []
+    for word in words:
+        if gematria.is_gematria(word):
+            indexes.append(str(gematria.gematria_calc(word)))
+        elif gematria.is_gmara_index(word):
+            indexes.append(gematria.gmara_calc_index(word))
+    return indexes
+    
 
 def translate_source_to_sefaria(heb_ref: str) -> str:
-    url = f"https://www.sefaria.org/api/name/{heb_ref}"
-    response = requests.get(url).json()
-    if response["is_ref"] == True:
-        return response["ref"]
-    return "pasten"
-
+    name = _heb_source_to_sefaria_name(heb_ref)
+    if not name:
+        return name
+    indexes = _get_possible_indexes(heb_ref)
+    return ".".join([name] + indexes)
 
 
 if __name__ == "__main__":

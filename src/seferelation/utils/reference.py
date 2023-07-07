@@ -121,6 +121,12 @@ class Reference:
             return self.ref == other
         return self.ref == other.ref
 
+    def __str__(self):
+        return str(self.ref)
+
+    def __repr__(self):
+        return repr(self.ref)
+
     def __hash__(self):
         return hash(self.ref)
 
