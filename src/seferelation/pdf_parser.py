@@ -13,6 +13,8 @@ def _visitor_body(text, cm, tm, font_dict, font_size):
 
 
 def _is_source_line(line: str) -> bool:
+    if len(line) < 5:
+        return False
     if re.match(r'^\d*\s?\.', line):
         return True
     if re.match(r'^[א-ת]?[א-ת]?\s?\.', line):
@@ -50,6 +52,7 @@ def parse_pdf_to_sefaria(path: str) -> List[str]:
     print(refs)
     print()
     print([reference.Reference(ref).to_sefaria_link() for ref in refs])
+    return list(refs)
 
 
 with open("scrapper/sefaria_he_titles_ext_3.pickle", "rb") as f:
