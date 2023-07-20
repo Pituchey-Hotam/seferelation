@@ -4,7 +4,7 @@ import pickle
 from pypdf import PdfReader
 import re
 
-from seferelation.utils import gematria, reference
+from seferelation.utils import gematria, nikud
 from seferelation.scrapper.sefaria_he_titles_extender import normalize_he_ref
 
 
@@ -15,6 +15,8 @@ def _visitor_body(text, cm, tm, font_dict, font_size):
 def _is_source_line(line: str) -> bool:
     if len(line) < 5:
         return False
+    if len(line) < 50:
+        return True
     if re.match(r'^\d*\s?\.', line):
         return True
     if re.match(r'^[א-ת]?[א-ת]?\s?\.', line):
@@ -28,7 +30,11 @@ def _filter_source_line(line: str) -> str:
 
 
 def parse_pdf_to_text_sources(path: str) -> List[str]:
-    reader = PdfReader(path)
+    try:
+        reader = PdfReader(path)
+    except Exception:
+        print(f"ERROR: pdf parse failed, file: {path}")
+        return []
     text = []
     for page in reader.pages:
         text.append(page.extract_text(visitor_text=_visitor_body))
@@ -45,31 +51,40 @@ def parse_pdf_to_sefaria(path: str) -> List[str]:
         sefaria_ref = translate_source_to_sefaria(source)
         refs.append(sefaria_ref)
         # print(f"souce:\t{source}\nsefaria:\t{sefaria_ref}")
-    print(f"total: {len(source_text)}")
+    # print(f"total: {len(source_text)}")
     refs = set(refs)
-    print("refs: ")
-    print(len(refs))
-    print(refs)
-    print()
-    print([reference.Reference(ref).to_sefaria_link() for ref in refs])
+    if "" in refs:
+        refs.remove("")
+    # print("refs: ")
+    # print(len(refs))
+    # print(refs)
+    # print()
+    # print([reference.Reference(ref).to_sefaria_link() for ref in refs])
     return list(refs)
 
 
 with open("scrapper/sefaria_he_titles_ext_3.pickle", "rb") as f:
     he_titles = pickle.load(f)
 
+# import ipdb; ipdb.set_trace()
+
 def _heb_source_to_sefaria_name(heb_ref: str) -> str:
-    words = heb_ref.split(" ")
+    words = heb_ref.split()
+    refs = {}
     for i in range(len(words)):
-        for j in range(len(words)):
+        for j in range(i, len(words)):
             sub_ref = " ".join(words[i:j+1])
             sub_ref_normal = normalize_he_ref(sub_ref)
             if sub_ref_normal in he_titles:
-                return he_titles[sub_ref_normal]
+                if (j - i) not in refs:
+                    refs[j - i] = he_titles[sub_ref_normal]
+    if refs:
+        return refs[max(refs.keys())]
     return ""
 
 
 def _get_possible_indexes(heb_ref: str) -> List[str]:
+    heb_ref = nikud.remove_nikud(heb_ref)
     words = re.findall(r"[\w.'\"]+", heb_ref)
     indexes = []
     for word in words:
