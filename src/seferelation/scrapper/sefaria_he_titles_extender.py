@@ -1,9 +1,22 @@
+from collections import defaultdict
 from typing import Dict
 import re
 import pickle
+import json
 
 
 HE_TITLES_PATH = "sefaria_he_titles.pickle"
+
+
+def export_to_sefaria_format():
+    with open("sefaria_he_titles_ext_4.pickle", "rb") as f:
+        he_titles = pickle.load(f)
+    ref_to_he_title = defaultdict(list)
+    for he, en in he_titles.items():
+        ref_to_he_title[en].append(he)
+    with open("sefaria_ref_to_he_title_variants.json", "w") as f:
+        json.dump(ref_to_he_title, f)
+    
 
 def _ext_1_fix_whitespaces(he_titles: Dict[str, str]):
     fixed = {}
@@ -76,12 +89,31 @@ def ext_3_remove_quotes():
         pickle.dump(he_titles, f)
 
 
+def ext_4_remove_rambam_halachot():
+    """
+    Make רמבם הלכות דעות also רמבם דעות
+    """
+    with open("sefaria_he_titles_ext_3.pickle", "rb") as f:
+        he_titles: Dict = pickle.load(f)
+    he_titles_ext = {}
+    for title, en in he_titles.items():
+        if re.match("רמב.?ם|משנה תורה", title) and title.find("הלכות") != -1:
+            he_titles_ext[title[title.find("הלכות"):]] = en
+    print(f"old len: {len(he_titles)}")
+    print(f"add len: {len(he_titles_ext)}")
+    for title, en in he_titles_ext.items():
+        if title not in he_titles:
+            he_titles[title] = en
+    print(len(he_titles))
+    with open("sefaria_he_titles_ext_4.pickle", "wb") as f:
+        pickle.dump(he_titles, f)
+
 def normalize_he_ref(he_ref: str) -> str:
     return clear_special_characters(he_ref)
 
 
 def main():
-    ext_3_remove_quotes()
+    ext_4_remove_rambam_halachot()
 
 
 if __name__ == "__main__":
